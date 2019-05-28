@@ -72,10 +72,10 @@ void loop() {
 
   lcd.print("\b     ");
   
-  enter = analogRead(enteringSensorPin);
-  leave = analogRead(leavingSensorPin);
+  enter = analogRead(enteringSensorPin); // reading of the parking entering sensor
+  leave = analogRead(leavingSensorPin); // reading of the parking leaving sensor
   
-  if ((freeSpots = getFreeSpots()) < 1) {
+  if ((freeSpots = getFreeSpots()) < 1) { // in case there are no free spots => barrier closes and displays message
     servo.write(0);
     
     delay(1000);
@@ -90,7 +90,7 @@ void loop() {
       delay(30);
     }
 
-    while ((leave = analogRead(leavingSensorPin)) <= 550);
+    while ((leave = analogRead(leavingSensorPin)) <= 550); // barrier stays up till the car leaves
 
     delay(500); // wait 500ms
     for (int i = 60; i >= 0; i--) { // close the barrier
@@ -105,7 +105,7 @@ void loop() {
       delay(30);
     }
     
-    while ((enter = analogRead(enteringSensorPin)) <= 550);
+    while ((enter = analogRead(enteringSensorPin)) <= 550); // barrier stays up till the car enters the parking
 
     delay(500); // wait 500ms
     for (int i = 60; i >= 0; i--) { // close the barrier
@@ -121,16 +121,16 @@ void loop() {
   }
 }
 
-unsigned short getFreeSpots() {
+unsigned short getFreeSpots() { // function to return the free spots count
   unsigned short count = 0x06;
 
-  for (unsigned short i = 0; i < 6; i++) {
+  for (unsigned short i = 0x0; i < 0x6; i++) {
     if (i < 4) {
-      if (digitalRead(parkingLotsPins[i]) == LOW) {
+      if (digitalRead(parkingLotsPins[i]) == LOW) { // spots 1-4 are connected to digital pins
         count --;
       }
     } else {
-      if (analogRead(parkingLotsPins[i]) <= 550) {
+      if (analogRead(parkingLotsPins[i]) <= 550) { // spots 5-6 are connected to analog pins
         count --;
       }
     }
